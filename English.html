@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <title>QuizzyNest</title>
+    
+        <link rel="stylesheet" type="text/css" href="STYLE.CSS">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+    <i class="fa fa-home" id="a"></i>
+    <a id="a" href="QUIZ.html">__Home</a>
+   
+    <div class="quiz-container" style="display:none;">
+        <div class="question"></div>
+        <div class="options"></div>
+        <div id="score"></div>
+        <div class="timer"></div>
+        <button id="next-button">Next</button>
+    </div>
+    
+    <div class="start-container">
+        <h1 id="h1">Welcome to the Quiz</h1>
+        <p id="p">Click the button below to start the quiz.</p>
+        <button id="start-button">Start Quiz</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "1) What is the opposite of bravery?",
+                options: ["A)Fear", "B) Courage", "C) Timidity", "D) Confidence"],
+                answer: "A) Fear",
+            },
+            {
+                question: "2) Which word means 'the study of the Earth's physical features?",
+                options: ["A) Geology", "B) Meteorology", "C) Biology", "D) Chemistry"],
+                answer: "A) Geology",
+            },
+            {
+                question: "3) What is the synonym for 'ubiquitous'?",
+                options: ["A) Scarce", "B) Abundant", "C) Unique", "D)Limited"],
+                answer: "B) Abundant",
+            },
+            {
+                question: "4)Which word means 'to make something less severe or intense'?",
+                options: ["A) Intensify", "B)Exacerbate ", "C) Mitigate", "D) Aggravate"],
+                answer: "C) Mitigate",
+            },
+            {
+                question: "5)What is the correct plural form of 'child'?",
+                options: ["A) Childs", "B) Childes", "C) Children", "D)Child's"],
+                answer: "C)Children",
+            },
+            {
+                question: "6)Which word means 'the ability to read and write' ?",
+                options: ["A) Illteracy", "B)Literacy", "C) Numeracy", "D)Aliteracy"],
+                answer: "B)Literacy",
+            },
+            {
+                question: "7)What is the meaning of the word 'ephemeral' ?",
+                options: ["A) Lasting for long time", "B) Brief or short-lived", "C) disorganised", "D) Colorful"],
+                answer: "B) Brief or short-lived",
+            },
+            {
+                question: "8)Which word describes a person who enjoys being alone and prefers solitude ?",
+                options: ["A) Extrovert", "B) Ambivert", "C) Introvert", "D) Extravagant"],
+                answer: "C) Introvert",
+            },
+            {
+                question: "9) What is the opposite of 'stingy'?",
+                options: ["A)Generous", "B)Frugal", "C)Thrifty", "D) Miserable"],
+                answer: "A)Generous",
+            },
+            {
+                question: "10)Which word means 'a feeling of intense anger and resentment'?",
+                options: ["A) Apathy", "B) Empathy", "C) Wrath", "D) Serenity"],
+                answer: "C) Wrath",
+            },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let countdown;
+        
+        const questionElement = document.querySelector(".question");
+        const optionsElement = document.querySelector(".options");
+        const scoreElement = document.getElementById("score");
+        const nextButton = document.getElementById("next-button");
+        const startButton = document.getElementById("start-button");
+
+        startButton.addEventListener("click", () => {
+            startQuiz();
+        });
+
+        function startQuiz() {
+            const startContainer = document.querySelector(".start-container");
+            const quizContainer = document.querySelector(".quiz-container");
+            startContainer.style.display = "none";
+            quizContainer.style.display = "block";
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const currentQuestion = questions[currentQuestionIndex];
+                questionElement.textContent = currentQuestion.question;
+                optionsElement.innerHTML = "";
+                currentQuestion.options.forEach((option, index) => {
+                    const optionElement = document.createElement("div");
+                    optionElement.textContent = option;
+                    optionElement.classList.add("option");
+                    optionElement.addEventListener("click", () => checkAnswer(option));
+                    optionsElement.appendChild(optionElement);
+                });
+                startCountdown();
+                nextButton.style.display = "none"; // Hide the "Next" button initially
+            } else {
+                endQuiz();
+            }
+        }
+
+        function startCountdown() {
+            let timeLeft = 15;
+            countdown = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    checkAnswer("");
+                } else {
+                    const timerElement = document.querySelector(".timer");
+                    timerElement.textContent = `Time Left: ${timeLeft} seconds`;
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function checkAnswer(selectedOption) {
+            clearInterval(countdown);
+            const currentQuestion = questions[currentQuestionIndex];
+            if (selectedOption === currentQuestion.answer) {
+                score++;
+            }
+            currentQuestionIndex++;
+            nextButton.style.display = "block"; // Show the "Next" button after answering
+        }
+
+        function endQuiz() {
+            questionElement.textContent = "Quiz Completed!";
+            optionsElement.innerHTML = "";
+            scoreElement.textContent = `Your Score: ${score} out of ${questions.length}`;
+            nextButton.style.display = "none"; // Hide the "Next" button when the quiz is completed.
+        }
+
+        nextButton.addEventListener("click", () => {
+            displayNextQuestion();
+        });
+
+        function displayNextQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                clearInterval(countdown);
+                displayQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+    </script>
+</body>
+</html>

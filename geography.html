@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <title>QuizzyNest</title>
+
+    <link rel="stylesheet" type="text/css" href="STYLE.CSS">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+    <i class="fa fa-home" id="a"></i>
+    <a id="a" href="QUIZ.html">__Home</a>
+   
+    <div class="quiz-container" style="display:none;">
+        <div class="question"></div>
+        <div class="options"></div>
+        <div id="score"></div>
+        <div class="timer"></div>
+        <button id="next-button">Next</button>
+    </div>
+    
+    <div class="start-container">
+        <h1 id="h1">Welcome to the Quiz</h1>
+        <p id="p">Click the button below to start the quiz.</p>
+        <button id="start-button">Start Quiz</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "1) What is the largest continent in the world?",
+                options: ["A) Asia", "B) Europe", "C) Africa", "D) South America"],
+                answer: "A) Asia",
+            },
+            {
+                question: "2) Which ocean is the largest by surface area?",
+                options: ["A) Atlantic Ocean", "B) Indian Ocean", "C) Pacific Ocean", "D) Arctic Ocean"],
+                answer: "C) Pacific Ocean",
+            },
+            {
+                question: "3) What is the capital of France?",
+                options: ["A) London", "B) Madrid", "C) Paris", "D) Melbourne"],
+                answer: "C) Paris",
+            },
+            {
+                question: "4) Which river is the longest in the world?",
+                options: ["A) Nile River", "B) Amazon River", "C) Mississippi River", "D) Ganga"],
+                answer: "A) Nile River",
+            },
+            {
+                question: "5) Which country is known as the Land of the Rising Sun?",
+                options: ["A) China", "B) Japan", "C) South Korea", "D) Taiwan"],
+                answer: "B) Japan",
+            },
+            {
+                question: "6) What is the largest desert in the world?",
+                options: ["A) Sahara Desert", "B) Gobi Desert", "C) Atacama Desert", "D) Arabian Desert"],
+                answer: "A) Sahara Desert",
+            },
+            {
+                question: "7) Which country is famous for the Great Barrier Reef?",
+                options: ["A) Australia", "B) Brazil", "C) Canada", "D) USA"],
+                answer: "A) Australia",
+            },
+            {
+                question: "8) What is the highest mountain in the world?",
+                options: ["A) Mount Kilimanjaro", "B) Mount Everest", "C) Mount McKinley", "D) Mount Elbrus"],
+                answer: "B) Mount Everest",
+            },
+            {
+                question: "9) Which country is known as the Land of a Thousand Lakes?",
+                options: ["A) Canada", "B) Sweden", "C) Finland", "D) Germany"],
+                answer: "C) Finland",
+            },
+            {
+                question: "10) What is the largest country in South America by land area?",
+                options: ["A) Argentina", "B) Brazil", "C) Chile", "D) Peru"],
+                answer: "B) Brazil",
+            },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let countdown;
+        
+        const questionElement = document.querySelector(".question");
+        const optionsElement = document.querySelector(".options");
+        const scoreElement = document.getElementById("score");
+        const nextButton = document.getElementById("next-button");
+        const startButton = document.getElementById("start-button");
+
+        startButton.addEventListener("click", () => {
+            startQuiz();
+        });
+
+        function startQuiz() {
+            const startContainer = document.querySelector(".start-container");
+            const quizContainer = document.querySelector(".quiz-container");
+            startContainer.style.display = "none";
+            quizContainer.style.display = "block";
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const currentQuestion = questions[currentQuestionIndex];
+                questionElement.textContent = currentQuestion.question;
+                optionsElement.innerHTML = "";
+                currentQuestion.options.forEach((option, index) => {
+                    const optionElement = document.createElement("div");
+                    optionElement.textContent = option;
+                    optionElement.classList.add("option");
+                    optionElement.addEventListener("click", () => checkAnswer(option));
+                    optionsElement.appendChild(optionElement);
+                });
+                startCountdown();
+                nextButton.style.display = "none"; // Hide the "Next" button initially
+            } else {
+                endQuiz();
+            }
+        }
+
+        function startCountdown() {
+            let timeLeft = 15;
+            countdown = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    checkAnswer("");
+                } else {
+                    const timerElement = document.querySelector(".timer");
+                    timerElement.textContent = `Time Left: ${timeLeft} seconds`;
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function checkAnswer(selectedOption) {
+            clearInterval(countdown);
+            const currentQuestion = questions[currentQuestionIndex];
+            if (selectedOption === currentQuestion.answer) {
+                score++;
+            }
+            currentQuestionIndex++;
+            nextButton.style.display = "block"; // Show the "Next" button after answering
+        }
+
+        function endQuiz() {
+            questionElement.textContent = "Quiz Completed!";
+            optionsElement.innerHTML = "";
+            scoreElement.textContent = `Your Score: ${score} out of ${questions.length}`;
+            nextButton.style.display = "none"; // Hide the "Next" button when the quiz is completed.
+        }
+
+        nextButton.addEventListener("click", () => {
+            displayNextQuestion();
+        });
+
+        function displayNextQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                clearInterval(countdown);
+                displayQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+    </script>
+</body>
+</html>
